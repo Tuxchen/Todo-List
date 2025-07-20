@@ -1,4 +1,12 @@
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/db/DatabaseConnection.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/db/ToDoDAO.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/CreateDialog.java
 /home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/MainFrame.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/PlaceholderTextArea.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/PlaceholderTextField.java
 /home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/ToDo.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/UpdateDialog.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/gui/WatchDialog.java
+/home/tuxchen/eclipse-workspace/Todo-List/src/main/java/utilities/DateLabelFormatter.java
 /home/tuxchen/eclipse-workspace/Todo-List/src/main/java/utilities/LM.java
 /home/tuxchen/eclipse-workspace/Todo-List/src/main/java/utilities/Priority.java

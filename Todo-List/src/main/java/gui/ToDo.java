@@ -4,22 +4,24 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import db.ToDoDAO;
 import utilities.LM;
 import utilities.Priority;
 
 public class ToDo extends JPanel {
 	private int id;
 	private String name;
-	private Date start;
-	private Date end;
+	private String start;
+	private String end;
+	private String description;
 	private boolean isDone;
 	private Priority priority;
 	
@@ -29,11 +31,12 @@ public class ToDo extends JPanel {
 	private JButton done;
 	private JButton delete;
 	
-	public ToDo(int id, String name, Date start, Date end, boolean isDone, Priority priority) {
+	public ToDo(int id, String name, String start, String end, String description, boolean isDone, Priority priority) {
 		this.id = id;
 		this.name = name;
 		this.start = start;
 		this.end = end;
+		this.description = description;
 		this.isDone = isDone;
 		this.priority = priority;
 		
@@ -46,7 +49,10 @@ public class ToDo extends JPanel {
 		title.setHorizontalAlignment(JLabel.CENTER);
 		title.setFont(new Font("Arial", Font.BOLD, 20));
 		
-		if(priority == Priority.LOW) {
+		if(isDone) {
+			title.setForeground(Color.green);
+		}
+		else if(priority == Priority.LOW) {
 			title.setForeground(Color.blue);
 		} else if(priority == Priority.MIDDLE) {
 			title.setForeground(Color.yellow);
@@ -56,13 +62,31 @@ public class ToDo extends JPanel {
 				
 		JPanel controls = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
-		update = new JButton(LM.getValue("update"));
+		update = new JButton(LM.getValue("todo.update"));
+		update.addActionListener(e -> {
+			UpdateDialog dialog = new UpdateDialog(null, LM.getValue("title.update"), true, this);
+			dialog.setSize(500, 550);
+			dialog.setVisible(true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		});
 		
-		watch = new JButton(LM.getValue("watch"));
+		watch = new JButton(LM.getValue("todo.watch"));
+		watch.addActionListener(e -> {
+			WatchDialog dialog = new WatchDialog(null, LM.getValue("title.watch"), true, this);
+			dialog.setSize(500, 550);
+			dialog.setVisible(true);
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		});
 		
-		done = new JButton(LM.getValue("done"));
+		done = new JButton(LM.getValue("todo.done"));
+		done.addActionListener(e -> {
+			ToDoDAO.markAsDone(id);
+		});
 		
-		delete = new JButton(LM.getValue("delete"));
+		delete = new JButton(LM.getValue("todo.delete"));
+		delete.addActionListener(e -> {
+			ToDoDAO.deleteTodo(id);
+		});
 		
 		controls.add(update);
 		controls.add(watch);
@@ -73,6 +97,58 @@ public class ToDo extends JPanel {
 		add(BorderLayout.SOUTH, controls);
 	}
 	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getStart() {
+		return start;
+	}
+
+	public void setStart(String start) {
+		this.start = start;
+	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public void setEnd(String end) {
+		this.end = end;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public boolean isDone() {
+		return isDone;
+	}
+
+	public void setDone(boolean isDone) {
+		this.isDone = isDone;
+	}
+
+	public Priority getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Priority priority) {
+		this.priority = priority;
+	}
+
+	public int getId() {
+		return id;
+	}
+
 	public void setUpdateText(String update) {
 		this.update.setText(update);
 	}

@@ -1,4 +1,12 @@
 gui/ToDo.class
-utilities/Priority.class
-utilities/LM.class
 gui/MainFrame.class
+gui/UpdateDialog.class
+gui/PlaceholderTextArea.class
+gui/CreateDialog.class
+gui/PlaceholderTextField.class
+utilities/Priority.class
+utilities/DateLabelFormatter.class
+utilities/LM.class
+gui/WatchDialog.class
+db/ToDoDAO.class
+db/DatabaseConnection.class
