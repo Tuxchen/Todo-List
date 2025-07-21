@@ -25,6 +25,7 @@ import db.ToDoDAO;
 import utilities.DateLabelFormatter;
 import utilities.LM;
 import utilities.Priority;
+import utilities.ToDoChangeListener;
 
 public class UpdateDialog extends JDialog implements ActionListener {
 	private Container c;
@@ -36,8 +37,11 @@ public class UpdateDialog extends JDialog implements ActionListener {
 	private JButton submit;
 	private ToDo todo;
 	
-	public UpdateDialog(JFrame owner, String title, boolean modal, ToDo todo) {
+	private ToDoChangeListener listener;
+	
+	public UpdateDialog(JFrame owner, String title, boolean modal, ToDo todo, ToDoChangeListener listener) {
 		super(owner, title, modal);
+		this.listener = listener;
 		c = getContentPane();
 		c.setLayout(new GridLayout(6, 1, 5, 5));
 		
@@ -111,11 +115,19 @@ public class UpdateDialog extends JDialog implements ActionListener {
 			end.getModel().getValue() != null &&
 			(!low.isSelected() || !middle.isSelected() || !high.isSelected())) {
 			
+			Date startDate = (Date) this.start.getModel().getValue();
+			Date endDate = (Date) this.end.getModel().getValue();
+			
+			if(!endDate.after(startDate)) {
+				JOptionPane.showMessageDialog(this, LM.getValue("date.invalid"));
+				return;
+			}
+			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 			
 			String name = this.name.getRealText();
-			String start = sdf.format(this.start.getModel().getValue());
-			String end = sdf.format(this.end.getModel().getValue());
+			String start = sdf.format(startDate);
+			String end = sdf.format(endDate);
 			String description = this.description.getRealText();
 			Priority priority;
 			
@@ -128,8 +140,10 @@ public class UpdateDialog extends JDialog implements ActionListener {
 			
 			boolean result = ToDoDAO.updateTodo(todo.getId(), name, start, end, description, false, priority);
 			
-			if(result)
-				dispose();
+			if(listener != null) {
+				listener.onToDoChanged();
+			}
+			dispose();
 		}
 		else {
 			JOptionPane.showMessageDialog(this, LM.getValue("info.box"));

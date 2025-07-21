@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.swing.ButtonGroup;
@@ -23,6 +24,7 @@ import db.ToDoDAO;
 import utilities.DateLabelFormatter;
 import utilities.LM;
 import utilities.Priority;
+import utilities.ToDoChangeListener;
 
 public class CreateDialog extends JDialog implements ActionListener {
 	private Container c;
@@ -33,8 +35,11 @@ public class CreateDialog extends JDialog implements ActionListener {
 	private JRadioButton low, middle, high;
 	private JButton submit;
 	
-	public CreateDialog(JFrame owner, String title, boolean modal) {
+	private ToDoChangeListener listener;
+	
+	public CreateDialog(JFrame owner, String title, boolean modal, ToDoChangeListener listener) {
 		super(owner, title, modal);
+		this.listener = listener;
 		c = getContentPane();
 		c.setLayout(new GridLayout(6, 1, 5, 5));
 		
@@ -88,11 +93,19 @@ public class CreateDialog extends JDialog implements ActionListener {
 			end.getModel().getValue() != null &&
 			(!low.isSelected() || !middle.isSelected() || !high.isSelected())) {
 			
+			Date startDate = (Date) this.start.getModel().getValue();
+			Date endDate = (Date) this.end.getModel().getValue();
+			
+			if(!endDate.after(startDate)) {
+				JOptionPane.showMessageDialog(this, LM.getValue("date.invalid"));
+				return;
+			}
+			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
 			
 			String name = this.name.getRealText();
-			String start = sdf.format(this.start.getModel().getValue());
-			String end = sdf.format(this.end.getModel().getValue());
+			String start = sdf.format(startDate);
+			String end = sdf.format(endDate);
 			String description = this.description.getRealText();
 			Priority priority;
 			
@@ -105,8 +118,10 @@ public class CreateDialog extends JDialog implements ActionListener {
 			
 			boolean result = ToDoDAO.insertNewTodo(name, start, end, description, false, priority);
 			
-			if(result)
-				dispose();
+			if(listener != null) {
+				listener.onToDoChanged();
+			}
+			dispose();
 		}
 		else {
 			JOptionPane.showMessageDialog(this, LM.getValue("info.box"));

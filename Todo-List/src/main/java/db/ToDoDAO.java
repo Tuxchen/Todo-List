@@ -132,4 +132,36 @@ public class ToDoDAO {
 		
 		return false;
 	}
+	
+	public static ArrayList<ArrayList<Object>> searchTodos(String name) {
+		String sql = "SELECT * FROM Todos WHERE name LIKE ?";
+		
+		ArrayList<ArrayList<Object>> results = new ArrayList<>();
+		
+		try(Connection conn = DatabaseConnection.connect();
+			PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, "%" + name + "%");
+			
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				ArrayList<Object> row = new ArrayList<>();
+				row.add(rs.getInt("id"));
+				row.add(rs.getString("name"));
+				row.add(rs.getString("start"));
+				row.add(rs.getString("end"));
+				row.add(rs.getString("description"));
+				row.add(rs.getBoolean("done"));
+				row.add(rs.getString("priority"));
+				
+				results.add(row);
+			}
+			
+			return results;
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new ArrayList<>();
+	}
 }

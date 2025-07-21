@@ -7,7 +7,6 @@ import java.awt.Font;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -15,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import db.ToDoDAO;
 import utilities.LM;
 import utilities.Priority;
+import utilities.ToDoChangeListener;
 
 public class ToDo extends JPanel {
 	private int id;
@@ -31,7 +31,9 @@ public class ToDo extends JPanel {
 	private JButton done;
 	private JButton delete;
 	
-	public ToDo(int id, String name, String start, String end, String description, boolean isDone, Priority priority) {
+	private ToDoChangeListener listener;
+	
+	public ToDo(int id, String name, String start, String end, String description, boolean isDone, Priority priority, ToDoChangeListener listener) {
 		this.id = id;
 		this.name = name;
 		this.start = start;
@@ -39,6 +41,8 @@ public class ToDo extends JPanel {
 		this.description = description;
 		this.isDone = isDone;
 		this.priority = priority;
+		
+		this.listener = listener;
 		
 		setLayout(new BorderLayout());
 		setBorder(new EmptyBorder(20, 0, 0, 0));
@@ -64,7 +68,7 @@ public class ToDo extends JPanel {
 		
 		update = new JButton(LM.getValue("todo.update"));
 		update.addActionListener(e -> {
-			UpdateDialog dialog = new UpdateDialog(null, LM.getValue("title.update"), true, this);
+			UpdateDialog dialog = new UpdateDialog(null, LM.getValue("title.update"), true, this, listener);
 			dialog.setSize(500, 550);
 			dialog.setVisible(true);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -81,11 +85,17 @@ public class ToDo extends JPanel {
 		done = new JButton(LM.getValue("todo.done"));
 		done.addActionListener(e -> {
 			ToDoDAO.markAsDone(id);
+			if(listener != null) {
+				listener.onToDoChanged();
+			}
 		});
 		
 		delete = new JButton(LM.getValue("todo.delete"));
 		delete.addActionListener(e -> {
 			ToDoDAO.deleteTodo(id);
+			if(listener != null) {
+				listener.onToDoChanged();
+			}
 		});
 		
 		controls.add(update);
