@@ -185,14 +185,14 @@ public class MainFrame extends JFrame implements ActionListener, ItemListener, T
 		ArrayList<ArrayList<Object>> results = ToDoDAO.searchTodos(text);
 
 		for (var row : results) {
-			ToDo todo = new ToDo((Integer) row.get(0), 
-								(String) row.get(1), 
-								(String) row.get(2), 
-								(String) row.get(3), 
-								(String) row.get(4), 
-								(Boolean) row.get(5),
-								Priority.valueOf((String) row.get(6)), 
-								this);
+			ToDo todo = new ToDo((Integer) row.get(0), // Die ID
+								(String) row.get(1), // Der Name bzw. die Bezeichnung
+								(String) row.get(2), // Das Startdatum
+								(String) row.get(3), // Das Enddatum
+								(String) row.get(4), // Die Beschreibung
+								(Boolean) row.get(5), // Ob erledigt oder nicht (done)
+								Priority.valueOf((String) row.get(6)), // Die Priorität
+								this); // Der Listener der darauf reagiert wenn sich etwas an der Todo-Liste geändert hat
 			todo.setBorder(new LineBorder(Color.black));
 
 			todoList.add(todo);
